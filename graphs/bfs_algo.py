@@ -49,8 +49,12 @@ print("given adjlist", adjList)
 print("prints only connected comp", bfs_single(adjList))
 print("prints all components", bfs_disconnected(adjList))
 
-# TC:
-# sc: 
+#V - no of vertices, E - no of edges
+# TC:O(V + E)
+# Each node is visited once → O(V)
+# Each edge is processed once in an adjacency list → O(E)
+# Total: O(V + E)
+# SC: O(V) space for the queue.
 #     0 
 # 1------ 2      5----7
 # |        |     |    |

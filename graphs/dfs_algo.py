@@ -39,6 +39,13 @@ edgeList = [(0, 1), (0, 2), (1, 2), (1, 3), (2, 4),
 # |        |     |    |
 # 3------ 4      6    8
 
+#V - no of vertices, E - no of edges
+# TC: O(V + E)
+# Each node is visited once → O(V)
+# Each edge is processed once in an adjacency list → O(E)
+# Total: O(V + E)
+# SC : O(V) (for DFS)
+# Recursive DFS uses O(V) stack space in the worst case (for a completely connected graph).
 adjList = createAdjList(n, edgeList)
 print("given adjlist", adjList)
 
