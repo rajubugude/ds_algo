@@ -23,7 +23,6 @@ def bfs_helper(queue, vis, node, ans):
     queue.append(node)
     while queue:
         currNode = queue.popleft()
-        vis[currNode] = 1
         ans.append(currNode)
         for adjNode in adjList[currNode]:
             if not vis[adjNode]:
@@ -50,7 +49,8 @@ print("given adjlist", adjList)
 print("prints only connected comp", bfs_single(adjList))
 print("prints all components", bfs_disconnected(adjList))
 
-
+# TC:
+# sc: 
 #     0 
 # 1------ 2      5----7
 # |        |     |    |
