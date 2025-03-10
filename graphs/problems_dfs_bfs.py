@@ -216,7 +216,6 @@ class Solution:
 
 
 
-
 # https://www.geeksforgeeks.org/problems/number-of-distinct-islands/0
 import sys
 from typing import List
@@ -354,3 +353,109 @@ class Solution:
         for i in range(len(path)):
             bob_time[path[i]] = i
         return self.max_profit_path(bob_time, 0, -1, 0, graph, amount, 0)
+
+
+# https://leetcode.com/problems/map-of-highest-peak/
+# https://leetcode.com/problems/01-matrix/description/class Solution:
+    def highestPeak(self, grid: List[List[int]]) -> List[List[int]]:
+        m = len(grid)
+        n = len(grid[0])
+        heights = [[-1 for _ in range(n)] for _ in range(m)]
+        queue = deque()
+        for i in range(m):
+            for j in range(n):
+                if grid[i][j] == 1:
+                    queue.append((i,j))
+                    heights[i][j] = 0
+        directions = [0, 1, 0, -1, 0]
+        while queue:
+            x, y  = queue.popleft()
+            for k in range(4):
+                dx = x + directions[k]
+                dy = y + directions[k+1]
+                if 0 <= dx < m and 0 <= dy < n and heights[dx][dy] == -1:
+                    queue.append((dx, dy))
+                    heights[dx][dy] = 1 + heights[x][y]
+        return heights
+        
+
+# https://leetcode.com/problems/word-ladder/description/
+class Solution:
+    def ladderLength(self, beginWord: str, endWord: str, wordList: List[str]) -> int:
+        wordsSet = set(wordList)
+        if endWord not in wordsSet:
+            return 0
+
+        queue = deque()
+        queue.append((beginWord,1))
+        while queue:
+            word,ans = queue.popleft()
+            if word == endWord:
+                return ans
+            for i in range(len(word)):
+                temp_word = ''
+                for j in range(26):
+                    new_char = chr(ord('a') + j)
+                    temp_word = word[:i] + new_char + word[i+1:]
+                    if temp_word in wordsSet:
+                        wordsSet.remove(temp_word)
+                        queue.append((temp_word,ans+1))
+        return 0
+
+
+# https://www.geeksforgeeks.org/problems/detect-cycle-in-a-directed-graph/1
+class Solution:
+    def isCyclic(self, adj : List[List[int]]) -> bool :
+        n = len(adj)
+        vis = [0]*n
+        dfs_vis = [0]*n
+        for node in range(n):
+            if not vis[node]:
+                if self.dfs(vis, dfs_vis, adj, node):
+                    return True
+        return False
+    
+    def dfs(self, vis, dfs_vis, adj, node):
+        vis[node] = 1
+        dfs_vis[node] = 1
+        for adj_node in adj[node]:
+            if not vis[adj_node]:
+                if self.dfs(vis, dfs_vis, adj, adj_node):
+                    return True
+            elif dfs_vis[adj_node] == 1:
+                return True
+        dfs_vis[node] = 0 
+        return False
+
+
+# https://leetcode.com/problems/find-eventual-safe-states/description/
+class Solution:
+    def eventualSafeNodes(self, adj: List[List[int]]) -> List[int]:
+        n = len(adj)
+        vis = [0] * n
+        dfs_vis = [0]*n
+        ans = set()
+        for node in range(n):
+            if not vis[node]:
+                self.dfs(node, vis, dfs_vis, adj, ans)
+        
+        safe_nodes = []
+        for i in range(n):
+            if i in ans:
+                safe_nodes.append(i)
+        return safe_nodes
+        
+    
+    def dfs(self, node, vis, dfs_vis, adj, ans):
+        vis[node] = 1
+        dfs_vis[node] = 1
+        for adj_node in adj[node]:
+            if dfs_vis[adj_node]:
+                return True
+            if not vis[adj_node]:
+                if self.dfs(adj_node, vis, dfs_vis, adj, ans):
+                    return True
+        
+        ans.add(node)
+        dfs_vis[node] = 0
+        return False
