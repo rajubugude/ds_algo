@@ -1,4 +1,4 @@
-This repository contains my Python solutions for problems from Striver's A-Z DSA Sheet and other decent problems from leetcode 📚. I'm solving Graphs, DP, Recursion, Trees, and more using my own approach.
+This repository contains my Python solutions for problems from Striver's A-Z DSA Sheet and other decent problems from leetcode 📚. I'm solving Graphs, DP, Recursion, Trees, and more.
 
 
 ## 📌 Topics Covered  
