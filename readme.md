@@ -13,7 +13,7 @@ This repository contains my Python solutions for problems from Striver's A-Z DSA
 ## 🚀 Why This Repo?  
 ✅ **Well-structured** & follows the A-Z DSA roadmap 📌  
 ✅ **Pythonic approach** with optimized solutions 🐍  
-✅ Great for **interview prep & competitive coding** 🎯  
+✅ Great for **interview prep** 🎯  
 
 ## 💡 How to Use?  
 Clone this repo & start practicing!  
