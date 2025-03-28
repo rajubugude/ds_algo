@@ -1,5 +1,5 @@
 from typing import List
-from collections import deque
+from collections import deque, defaultdict
 
 directions = [0, 1, 0, -1, 0]
 # https://leetcode.com/problems/number-of-provinces/
@@ -170,7 +170,7 @@ class Solution:
                     queue.append((dx,dy)) 
 
 
-# https://www.geeksforgeeks.org/problems/detect-cycle-in-an-undirected-graph/1?itm_source=geeksforgeeks&itm_medium=article&itm_campaign=practice_card
+# https://www.geeksforgeeks.org/problems/detect-cycle-in-an-undirected-graph/1
 class Solution:
     # Function to detect cycle in an undirected graph.
     def isCycle(self, n: int, adj) -> bool:
@@ -459,3 +459,242 @@ class Solution:
         ans.add(node)
         dfs_vis[node] = 0
         return False
+
+
+# https://leetcode.com/problems/number-of-closed-islands/
+directions = [0, 1, 0, -1, 0]
+class Solution:
+    def closedIsland(self, grid: List[List[int]]) -> int:
+        n = len(grid)
+        m = len(grid[0])
+        count = 0
+        for i in range(n):
+            for j in range(m):
+                if i == 0 or i == n-1 or j == 0 or j == m-1:
+                    if grid[i][j] == 0:
+                        self.dfs(i, j, grid, n, m)
+
+        for i in range(1,n-1):
+            for j in range(1, m-1):
+                if grid[i][j] == 0:
+                    self.dfs(i, j, grid, n, m)
+                    count += 1     
+        return count
+    
+    def dfs(self, x, y, grid, n, m):
+        if x < 0 or x >= n or y < 0 or y >= m or grid[x][y] != 0:
+            return
+        grid[x][y] = 1
+        for k in range(4):
+            dx = x + directions[k]
+            dy = y + directions[k+1]
+            self.dfs(dx, dy, grid, n, m) 
+
+
+# https://leetcode.com/problems/shortest-path-in-binary-matrix/submissions/1573143065/
+directions = [[0,1], [0,-1], [1,0], [-1,0], [1,1], [1,-1], [-1,1], [-1,-1]]
+class Solution:
+    '''
+    Key Rule:
+    🚀 BFS should always track depth by storing it inside the queue (as a tuple),
+        rather than using a global counter.
+    '''
+    def shortestPathBinaryMatrix(self, grid: List[List[int]]) -> int:
+        n = len(grid)
+        if grid[0][0] != 0 or grid[n-1][n-1] != 0:
+            return -1
+        vis = [[0] * n for _ in range(n)]
+        vis[0][0] = 1
+        return self.bfs(0, 0, grid, n, vis)
+    
+    def bfs(self, x, y, grid, n, vis):
+        queue = deque()
+        queue.append((x,y,1))
+        while queue:
+            u, v, length = queue.popleft()
+            if u == n-1 and v == n-1:
+                return length
+            for du, dv in directions:
+                dx = u + du
+                dy = v + dv
+                if 0 <= dx < n and 0 <= dy < n and grid[dx][dy] == 0 \
+                    and not vis[dx][dy] :
+                    queue.append((dx, dy, length + 1))
+                    vis[dx][dy] = 1
+        return -1  
+
+
+# https://leetcode.com/problems/minimum-cost-walk-in-weighted-graph/description/
+# class Solution:
+#     def dfs(self, node: int, vis: List[int], adj: List[List[tuple]], temp: List[int], comp_and: List[int]):
+#         """DFS to find connected components and compute cumulative AND."""
+#         vis[node] = 1
+#         temp.append(node)
+#         for adj_node, weight in adj[node]:
+#             comp_and[0] &= weight  # Update AND value
+#             if not vis[adj_node]:
+#                 self.dfs(adj_node, vis, adj, temp, comp_and)
+
+#     def minimumCost(self, n: int, edges: List[List[int]], queries: List[List[int]]) -> List[int]:
+#         """Finds minimum cost using bitwise AND for each connected component."""
+#         # Step 1: Build adjacency list
+#         adj = [[] for _ in range(n)]
+#         for u, v, wt in edges:
+#             adj[u].append((v, wt))
+#             adj[v].append((u, wt))
+
+#         # Step 2: Identify connected components and their AND values
+#         component_id = [-1] * n  # Stores component number for each node
+#         component_and_value = []  # Stores cumulative AND for each component
+#         vis = [0] * n
+#         comp_index = 0  # Component index
+
+#         for node in range(n):
+#             if not vis[node]:  # New component found
+#                 temp = []
+#                 comp_and = [2**21 - 1]  # Initialize AND as all 1s
+#                 self.dfs(node, vis, adj, temp, comp_and)
+                
+#                 # Store results for this component
+#                 for x in temp:
+#                     component_id[x] = comp_index
+#                 component_and_value.append(comp_and[0])
+#                 comp_index += 1
+
+#         # Step 3: Answer Queries
+#         result = []
+#         for u, v in queries:
+#             if component_id[u] == component_id[v]:  # Same component
+#                 result.append(component_and_value[component_id[u]])
+#             else:
+#                 result.append(-1)  # Different components
+
+#         return result
+
+
+class Solution: 
+    def dfs(self, node, vis, comp_id, comp_idx, curr_and, adj):
+        vis[node] = 1
+        comp_id[node] = comp_idx
+        for adj_node, wt in adj[node]:
+            curr_and[0] &= wt
+            if not vis[adj_node]:
+                comp_id[adj_node] = comp_idx
+                self.dfs(adj_node, vis, comp_id, comp_idx, curr_and, adj)
+
+    def minimumCost(self, n: int, edges: List[List[int]], query: List[List[int]]) -> List[int]:
+        adj = [[] for _ in range(n)]
+        for u, v, wt in edges:
+            adj[u].append((v, wt))
+            adj[v].append((u, wt))
+        
+        comp_id = [-1]*n
+        comp_idx = 0
+        comp_and = []
+        vis = [0] * n
+        for node in range(n):
+            if not vis[node]:
+                curr_and = [2**31-1]
+                self.dfs(node, vis, comp_id, comp_idx, curr_and, adj)
+                comp_and.append(curr_and[0])
+                comp_idx += 1
+
+        res = []
+        for u, v in query:
+            if comp_id[u] == comp_id[v]:
+                val = comp_id[u]
+                res.append(comp_and[val])
+            else:
+                res.append(-1)
+        return res
+
+# n = 5
+# edges = [[0,1,7],[1,3,7],[1,2,1]]
+# query = [[0,3],[3,4]]
+n = 3
+edges = [[0,2,7],[0,1,15],[1,2,6],[1,2,1]]
+query = [[1,2]]
+s = Solution()
+print(s.minimumCost(n, edges, query))
+
+
+# https://leetcode.com/problems/find-all-possible-recipes-from-given-supplies/solutions/6563311/easiest-python-solution-using-hashmap-and-set-runtime-61-ms-beats-71-72-memory-19-73-mb/
+class Solution:
+    def findAllRecipes(self, recipes: List[str], ingredients: List[List[str]], supplies: List[str]) -> List[str]:
+        indegree = {}
+        graph = defaultdict(list)
+        
+        for i, recipe in enumerate(recipes):
+            indegree[recipe] = len(ingredients[i])
+            for ingredient in ingredients[i]:
+                graph[ingredient].append(recipe)
+        queue = deque(supplies)
+        result = []
+        
+        while queue:
+            ingredient = queue.popleft()
+            for recipe in graph[ingredient]:
+                indegree[recipe] -= 1
+                if indegree[recipe] == 0:
+                    result.append(recipe)
+                    queue.append(recipe)
+        return result
+    
+
+# s = Solution()
+# recipes = ["bread","sandwich","burger"]
+# ingredients = [["yeast","flour"],["bread","meat"],["sandwich","meat","bread"]]
+# supplies = ["yeast","flour","meat"]
+# print(s.findAllRecipes(recipes, ingredients, supplies))
+
+
+# https://leetcode.com/problems/count-the-number-of-complete-components/description/
+class Solution:
+    def dfs(self, comp, vis, adj, node):
+        vis[node] = 1
+        comp.append(node)
+        for adj_node in adj[node]:
+            if not vis[adj_node]:
+                self.dfs(comp, vis, adj, adj_node)
+                
+    def countCompleteComponents(self, n: int, edges: list[list[int]]) -> int:
+        graph = [[] for _ in range(n)]
+
+        for u, v in edges:
+            graph[u].append(v)
+            graph[v].append(u)
+
+        visited = [False] * n
+        complete_components = 0
+
+        for vertex in range(n):
+            if not visited[vertex]:
+                component = []
+                # self.dfs(component, visited, graph, vertex)
+                queue = [vertex]
+                visited[vertex] = True
+
+                while queue:
+                    current = queue.pop(0)
+                    component.append(current)
+                    for neighbor in graph[current]:
+                        if not visited[neighbor]:
+                            queue.append(neighbor)
+                            visited[neighbor] = True
+                is_complete = True
+                for node in component:
+                    if len(graph[node]) != len(component) - 1:
+                        is_complete = False
+                        break
+
+                if is_complete:
+                    complete_components += 1
+
+        return complete_components
+s = Solution()   
+# edges = [[0,1],[0,2],[1,2],[3,4]]
+# n = 6
+
+edges = [[1,0],[2,0],[2,1],[3,0]]
+n = 4
+print(s.countCompleteComponents(n, edges))
