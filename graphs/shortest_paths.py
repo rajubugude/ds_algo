@@ -63,6 +63,9 @@ class Solution:
         
 
 #TODO - Dijsktra's Algorithm using PQ
+
+#Limitaions -> won't work with graphs having negative edge weights and negative cycles
+
 # Time Complexity : O( E log(V) ) 
 # Where E = Number of edges and V = Number of Nodes.
 # Space Complexity : O( |E| + |V| ) 

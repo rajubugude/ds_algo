@@ -525,51 +525,51 @@ class Solution:
 
 
 # https://leetcode.com/problems/minimum-cost-walk-in-weighted-graph/description/
-# class Solution:
-#     def dfs(self, node: int, vis: List[int], adj: List[List[tuple]], temp: List[int], comp_and: List[int]):
-#         """DFS to find connected components and compute cumulative AND."""
-#         vis[node] = 1
-#         temp.append(node)
-#         for adj_node, weight in adj[node]:
-#             comp_and[0] &= weight  # Update AND value
-#             if not vis[adj_node]:
-#                 self.dfs(adj_node, vis, adj, temp, comp_and)
+class Solution:
+    def dfs(self, node: int, vis: List[int], adj: List[List[tuple]], temp: List[int], comp_and: List[int]):
+        """DFS to find connected components and compute cumulative AND."""
+        vis[node] = 1
+        temp.append(node)
+        for adj_node, weight in adj[node]:
+            comp_and[0] &= weight  # Update AND value
+            if not vis[adj_node]:
+                self.dfs(adj_node, vis, adj, temp, comp_and)
 
-#     def minimumCost(self, n: int, edges: List[List[int]], queries: List[List[int]]) -> List[int]:
-#         """Finds minimum cost using bitwise AND for each connected component."""
-#         # Step 1: Build adjacency list
-#         adj = [[] for _ in range(n)]
-#         for u, v, wt in edges:
-#             adj[u].append((v, wt))
-#             adj[v].append((u, wt))
+    def minimumCost(self, n: int, edges: List[List[int]], queries: List[List[int]]) -> List[int]:
+        """Finds minimum cost using bitwise AND for each connected component."""
+        # Step 1: Build adjacency list
+        adj = [[] for _ in range(n)]
+        for u, v, wt in edges:
+            adj[u].append((v, wt))
+            adj[v].append((u, wt))
 
-#         # Step 2: Identify connected components and their AND values
-#         component_id = [-1] * n  # Stores component number for each node
-#         component_and_value = []  # Stores cumulative AND for each component
-#         vis = [0] * n
-#         comp_index = 0  # Component index
+        # Step 2: Identify connected components and their AND values
+        component_id = [-1] * n  # Stores component number for each node
+        component_and_value = []  # Stores cumulative AND for each component
+        vis = [0] * n
+        comp_index = 0  # Component index
 
-#         for node in range(n):
-#             if not vis[node]:  # New component found
-#                 temp = []
-#                 comp_and = [2**21 - 1]  # Initialize AND as all 1s
-#                 self.dfs(node, vis, adj, temp, comp_and)
+        for node in range(n):
+            if not vis[node]:  # New component found
+                temp = []
+                comp_and = [2**21 - 1]  # Initialize AND as all 1s
+                self.dfs(node, vis, adj, temp, comp_and)
                 
-#                 # Store results for this component
-#                 for x in temp:
-#                     component_id[x] = comp_index
-#                 component_and_value.append(comp_and[0])
-#                 comp_index += 1
+                # Store results for this component
+                for x in temp:
+                    component_id[x] = comp_index
+                component_and_value.append(comp_and[0])
+                comp_index += 1
 
-#         # Step 3: Answer Queries
-#         result = []
-#         for u, v in queries:
-#             if component_id[u] == component_id[v]:  # Same component
-#                 result.append(component_and_value[component_id[u]])
-#             else:
-#                 result.append(-1)  # Different components
+        # Step 3: Answer Queries
+        result = []
+        for u, v in queries:
+            if component_id[u] == component_id[v]:  # Same component
+                result.append(component_and_value[component_id[u]])
+            else:
+                result.append(-1)  # Different components
 
-#         return result
+        return result
 
 
 class Solution: 
@@ -616,36 +616,6 @@ edges = [[0,2,7],[0,1,15],[1,2,6],[1,2,1]]
 query = [[1,2]]
 s = Solution()
 print(s.minimumCost(n, edges, query))
-
-
-# https://leetcode.com/problems/find-all-possible-recipes-from-given-supplies/solutions/6563311/easiest-python-solution-using-hashmap-and-set-runtime-61-ms-beats-71-72-memory-19-73-mb/
-class Solution:
-    def findAllRecipes(self, recipes: List[str], ingredients: List[List[str]], supplies: List[str]) -> List[str]:
-        indegree = {}
-        graph = defaultdict(list)
-        
-        for i, recipe in enumerate(recipes):
-            indegree[recipe] = len(ingredients[i])
-            for ingredient in ingredients[i]:
-                graph[ingredient].append(recipe)
-        queue = deque(supplies)
-        result = []
-        
-        while queue:
-            ingredient = queue.popleft()
-            for recipe in graph[ingredient]:
-                indegree[recipe] -= 1
-                if indegree[recipe] == 0:
-                    result.append(recipe)
-                    queue.append(recipe)
-        return result
-    
-
-# s = Solution()
-# recipes = ["bread","sandwich","burger"]
-# ingredients = [["yeast","flour"],["bread","meat"],["sandwich","meat","bread"]]
-# supplies = ["yeast","flour","meat"]
-# print(s.findAllRecipes(recipes, ingredients, supplies))
 
 
 # https://leetcode.com/problems/count-the-number-of-complete-components/description/

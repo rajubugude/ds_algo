@@ -5,10 +5,10 @@
 
 
 
-u, v = (map(int, input().split()))
-l = [u, v]
-print(l)
-print(type(l))
+# u, v = (map(int, input().split()))
+# l = [u, v]
+# print(l)
+# print(type(l))
 
 # input() takes user input as a string.
 # .split() breaks the input into separate string values.
