@@ -8,7 +8,8 @@
 #     the sum of all the edge weights is the minimum.
 
 
-#Prim's Algo
+#Prim's Algo: dijsktra's with vis array kind of.
+# Steps:
 
 # Time Complexity: O(E*logE) + O(E*logE)~ O(E*logE), where E = no. of given edges.
 # Space Complexity: O(E) + O(V), where E = no. of edges and V = no. of vertices. 
@@ -18,7 +19,6 @@ class Solution:
         vis = [0] * n
         pq = []
         res = 0  # to store MST weight sum
-        # heapq.heappush(pq, (0, 0, -1))  # (weight, node, parent)
         heapq.heappush(pq, (0, 0))  # (weight, node)
 
         while pq:
@@ -53,8 +53,7 @@ class Solution:
                 if not vis[adj_node]:
                     heapq.heappush(pq, (adj_wt, adj_node, node))
 
-        return mst, res        
-
+        return mst, res
 
 
 #Disjoint Set - Union by rank/size

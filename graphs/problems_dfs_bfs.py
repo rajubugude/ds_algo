@@ -405,16 +405,19 @@ class Solution:
 
 # https://www.geeksforgeeks.org/problems/detect-cycle-in-a-directed-graph/1
 class Solution:
-    def isCyclic(self, adj : List[List[int]]) -> bool :
-        n = len(adj)
-        vis = [0]*n
-        dfs_vis = [0]*n
-        for node in range(n):
-            if not vis[node]:
-                if self.dfs(vis, dfs_vis, adj, node):
+    def isCycle(self, n, edges):
+        adj = [[] for _ in range(n)]
+        for u, v in edges:
+            adj[u].append(v)
+
+        vis = [0] * n
+        dfs_vis = [0] * n
+        for i in range(n):
+            if not vis[i]:
+                if self.dfs(vis, dfs_vis, adj, i):
                     return True
         return False
-    
+
     def dfs(self, vis, dfs_vis, adj, node):
         vis[node] = 1
         dfs_vis[node] = 1
@@ -422,11 +425,11 @@ class Solution:
             if not vis[adj_node]:
                 if self.dfs(vis, dfs_vis, adj, adj_node):
                     return True
-            elif dfs_vis[adj_node] == 1:
-                return True
-        dfs_vis[node] = 0 
-        return False
 
+            if dfs_vis[node] and dfs_vis[adj_node]:
+                return True
+        dfs_vis[node]  = 0
+        return False
 
 # https://leetcode.com/problems/find-eventual-safe-states/description/
 class Solution:
@@ -661,10 +664,44 @@ class Solution:
                     complete_components += 1
 
         return complete_components
-s = Solution()   
+s = Solution()
 # edges = [[0,1],[0,2],[1,2],[3,4]]
 # n = 6
 
 edges = [[1,0],[2,0],[2,1],[3,0]]
 n = 4
 print(s.countCompleteComponents(n, edges))
+
+
+# https://leetcode.com/problems/word-ladder-ii/
+# Todo: The below code is to print all possible paths, no the shortest
+class Solution:
+    def findLadders(self, beginWord: str, endWord: str, wordList: List[str]) -> List[List[str]]:
+        words = set(wordList)
+        if endWord not in words:
+            return []
+
+        ans = []
+        self.helper(ans, [beginWord], words, beginWord, endWord)
+        return ans
+
+    def helper(self, ans: List[List[str]], temp: List[str], words: set, start: str, end: str):
+        if start == end:
+            ans.append(temp[:])
+            return
+
+        # Generate all possible next words
+        for i in range(len(start)):
+            for c in 'abcdefghijklmnopqrstuvwxyz':
+                next_word = start[:i] + c + start[i+1:]
+                if next_word in words:
+                    # Remove word from set to avoid reuse in this path
+                    words.remove(next_word)
+                    # Add current word to path and recurse
+                    temp.append(next_word)
+                    self.helper(ans, temp, words, next_word, end)
+                    # Backtrack: restore word to set and remove from path
+                    temp.pop()
+                    words.add(next_word)
+
+

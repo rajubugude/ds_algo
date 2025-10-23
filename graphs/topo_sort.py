@@ -311,3 +311,41 @@ recipes = ["bread","sandwich","burger"]
 ingredients = [["yeast","flour"],["bread","meat"],["sandwich","meat","bread"]]
 supplies = ["yeast","flour","meat"]
 print(s.findAllRecipes(recipes, ingredients, supplies))
+
+
+import heapq
+
+class Solution123:
+    def dijkstra(self, n, edges, src):
+        pq = []
+        adj = [[] for _ in range(n)]
+        # print(adj)
+
+        for u, v, wt in edges:
+            adj[u].append((v, wt))
+            adj[v].append((u, wt))
+
+        # print(adj)
+
+        dist = [float('inf')]*n
+        dist[src] = 0
+        heapq.heappush(pq, (0, src))
+
+        while pq:
+            curr_dist, curr_node = heapq.heappop(pq)
+            if curr_dist > dist[curr_node]:
+                continue
+
+            for adj_node, adj_wt in adj[curr_node]:
+                new_dist = curr_dist + dist[curr_node]
+                if dist[adj_node] > new_dist:
+                    dist[adj_node] = new_dist
+                    heapq.heappush(pq, (new_dist, adj_node))
+
+        return [-1 if x == float('inf') else x for x in dist]
+
+s = Solution123()
+V = 3
+edges = [[0, 1, 1], [1, 2, 3], [0, 2, 6]]
+src = 2
+print(s.dijkstra())
